@@ -1,6 +1,6 @@
 providers:
   # - Workbench\App\Providers\WorkbenchServiceProvider
-  - LaravelQL\LaravelQL\LaravelQLServiceProvider.php
+  - LaravelQL\LaravelQL\LaravelQLServiceProvider
 
 migrations:
   - workbench/database/migrations
@@ -14,7 +14,7 @@ workbench:
   health: false
   discovers:
     web: true
-    api: false
+    api: true
     commands: false
     components: false
     views: false
