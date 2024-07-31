@@ -8,7 +8,7 @@ class LaravelQLServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-
+        dd("HELLO IN BOOT");
     }
 
     public function register()
