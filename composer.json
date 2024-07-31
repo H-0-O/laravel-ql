@@ -4,7 +4,7 @@
     "autoload": {
         "psr-4": {
             "LaravelQL\\LaravelQL\\": "src/",
-            "Tests\\": "tests/"
+            "Tests": "tests/"
         }
     },
     "authors": [
@@ -13,6 +13,13 @@
             "email": "ho.off.acc@gmail.com"
         }
     ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelQL\\LaravelQL\\LaravelQLServiceProvider"
+            ]
+        }
+    },
     "require": {
         "laravel/framework": "^11",
         "webonyx/graphql-php": "^15.12"
