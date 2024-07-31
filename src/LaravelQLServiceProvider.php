@@ -6,9 +6,10 @@ use Illuminate\Support\ServiceProvider;
 
 class LaravelQLServiceProvider extends ServiceProvider
 {
+
     public function boot(): void
     {
-        dd("HELLO IN BOOT");
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
     }
 
     public function register()
