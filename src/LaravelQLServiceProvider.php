@@ -9,6 +9,9 @@ class LaravelQLServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if(env('LARAVEL_QL_DEBUG', false)) {
+            config(['logging.channels.single.path' => dirname(__DIR__).'/storage/logs/QL.log']);
+        }
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
     }
 
