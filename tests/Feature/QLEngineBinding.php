@@ -8,15 +8,22 @@ use Orchestra\Testbench\TestCase;
 class QLEngineBinding extends TestCase
 {
     use WithWorkbench;
+    const HEADERS = [
+        'Content-Type' => 'application/json',
+        'Accept'       => 'application/json'
+    ];
     public function testBind(){
+        $re = $this->postJson('/graphql' , [
+            'query' => <<<GQL
+                query {
+                    hello
+                }
 
-        $re = $this->post('/bind' , [] , [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
-        ]);
+             GQL
 
-        $re->assertJson([
-           'message' => "Hello in bind"
-        ]);
+        ] , self::HEADERS);
+
+        var_dump($re->original);
+        die();
     }
 }

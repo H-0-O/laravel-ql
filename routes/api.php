@@ -9,4 +9,4 @@ Route::post("/" , function(){
 });
 
 
-Route::post("/bind" , [QLController::class , 'bind']);
+Route::post("/graphql" , [QLController::class , 'bind']);
