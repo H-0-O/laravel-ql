@@ -18,9 +18,7 @@ class QLController extends Controller
             'name' => 'User',
             'fields' => [
                 'hello' => [
-                    'type' => [
-                        's'
-                    ],
+                    'type' => Type::string(),
                     'resolve' => function($rootVal , $args): string{
                         Log::info("HELLO IN RESOLVER");
 

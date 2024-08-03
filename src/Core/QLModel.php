@@ -13,12 +13,12 @@ use RuntimeException;
 #[Attribute]
 class QLModel
 {
-    const QUERY_TYPE_NAME = "name";
+    public string $typeName = "";
 
     /** @var array<ReflectionMethod> */
-    public array $queries = [];
+    private array $queries = [];
 
-    public array $mutations = [];
+    private array $mutations = [];
 
     /**
      * @throws InvalidReturnTypeException
@@ -37,7 +37,7 @@ class QLModel
 
             $buildQueries[]['fields'][$typeName] = [
                 'resolve' => fn() => "Must write a dynamic resolver",
-                'type' => ''
+                'type'    => ''
             ];
         }
 
@@ -50,7 +50,8 @@ class QLModel
     }
 
 
-    public function generateFields(ReflectionMethod $method){
+    public function generateFields(ReflectionMethod $method)
+    {
         $returnType = $method->getReturnType();
     }
 
@@ -63,7 +64,7 @@ class QLModel
         if (!$method->hasReturnType()) {
             throw new QueryMustHaveReturnTypeException("You must define a `return type` for $method->name in $method->class");
         }
-        if($method->getReturnType() instanceof  ReflectionUnionType){
+        if ($method->getReturnType() instanceof ReflectionUnionType) {
             throw new RuntimeException("Unions are not supported currently  ");
         }
 
@@ -72,7 +73,19 @@ class QLModel
         }
     }
 
-    private function getQueryType(ReflectionMethod $method){
+    private function getQueryType(ReflectionMethod $method)
+    {
         return $method->getReturnType();
     }
+
+    public function addQueryMethod(ReflectionMethod $method): void
+    {
+        $this->queries[] = $method;
+    }
+
+    public function addMutationMethod(ReflectionMethod $method): void
+    {
+        $this->mutations[] = $method;
+    }
+
 }

@@ -3,13 +3,17 @@
 namespace LaravelQL\LaravelQL;
 
 use App\Models\User;
+use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
+use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use ReflectionException;
 
 class QLContainer
 {
     private static array $models;
 
+    private static array $types = [];
 
     public static function setModels(array $models)
     {
@@ -33,12 +37,23 @@ class QLContainer
     }
 
     /**
-     * @throws \ReflectionException
+     * this method just create
+     * @throws InvalidReturnTypeException
+     * @throws QueryMustHaveReturnTypeException
+     * @throws ReflectionException
      */
     public static function generate(){
-        $final = [];
+
+        //here we just create type to resolve when we are resolving Type that are dependent
         foreach (self::$models as $model) {
-            new QLGenerator($model);
+           $generator =  new QLGenerator($model);
+           if($generator->createBaseConf()){
+                 self::$types[$generator->getQLModelName()] = $generator;
+           }
+        }
+
+        foreach (self::$types as $type) {
+            $type->generate();
         }
     }
 

@@ -4,6 +4,8 @@ namespace LaravelQL\LaravelQL;
 
 use Illuminate\Database\Eloquent\Model;
 use LaravelQL\LaravelQL\Core\QLModel;
+use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
+use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -28,21 +30,30 @@ class QLGenerator
         $this->reflection = new ReflectionClass(
             new $modelPath()
         );
-
-        $this->generate();
     }
 
-    private function generate(): void
+    public function createBaseConf(): bool
     {
+
         $attrs = $this->reflection->getAttributes(QLModel::class);
         if (count($attrs) === 0) {
-            return;
+            return false;
         }
 
         $this->QLModel = new QLModel();
+        //TODO later here must check that user enter custom name or no
+        $this->QLModel->typeName = $this->reflection->getShortName();
+        return true;
+    }
+
+    /**
+     * @throws QueryMustHaveReturnTypeException
+     * @throws InvalidReturnTypeException
+     */
+    public function generate(): void
+    {
         $this->extractDataOnce();
         $this->extractQueriesAndMutations();
-
 
 
         $this->QLModel->buildQuires();
@@ -60,10 +71,15 @@ class QLGenerator
         foreach ($this->QLModelMethods as $modelMethod) {
             $name = $modelMethod->getName();
             if (str_starts_with($name, "query") && $name !== "query") {
-                $this->QLModel->queries[] = $modelMethod;
+                $this->QLModel->addQueryMethod($modelMethod);
             } elseif (str_starts_with($name, "mut") && $name !== "mut" ) {
-                $this->QLModel->mutations[] = $modelMethod;
+                $this->QLModel->addMutationMethod($modelMethod);
             }
         }
+    }
+
+    public function getQLModelName(): string
+    {
+        return $this->QLModel->typeName;
     }
 }
