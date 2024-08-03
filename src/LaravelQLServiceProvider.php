@@ -3,6 +3,8 @@
 namespace LaravelQL\LaravelQL;
 
 use Illuminate\Support\ServiceProvider;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class LaravelQLServiceProvider extends ServiceProvider
 {
@@ -13,6 +15,8 @@ class LaravelQLServiceProvider extends ServiceProvider
             config(['logging.channels.single.path' => dirname(__DIR__).'/storage/logs/QL.log']);
         }
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        QLContainer::grepModels();
+        QLContainer::generate();
     }
 
     public function register()

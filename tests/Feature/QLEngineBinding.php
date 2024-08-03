@@ -12,10 +12,15 @@ class QLEngineBinding extends TestCase
         'Content-Type' => 'application/json',
         'Accept'       => 'application/json'
     ];
+    protected function getEnvironmentSetUp($app)
+    {
+        $app->setBasePath(dirname(__DIR__));
+    }
+
     public function testBind(){
         $re = $this->postJson('/graphql' , [
             'query' => <<<GQL
-                query {
+                {
                     hello
                 }
 

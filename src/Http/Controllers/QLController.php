@@ -13,11 +13,14 @@ use Illuminate\Support\Facades\Log;
 class QLController extends Controller
 {
     public function bind(Request $request){
+
         $queryType = new ObjectType([
-            'name' => 'Query',
+            'name' => 'User',
             'fields' => [
                 'hello' => [
-                    'type' => Type::string(),
+                    'type' => [
+                        's'
+                    ],
                     'resolve' => function($rootVal , $args): string{
                         Log::info("HELLO IN RESOLVER");
 
@@ -26,6 +29,7 @@ class QLController extends Controller
                 ],
             ]
         ]);
+
         $schema = new Schema(
             (new SchemaConfig())->setQuery($queryType)
         );
