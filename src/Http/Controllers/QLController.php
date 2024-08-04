@@ -6,6 +6,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
+use GraphQL\Utils\SchemaPrinter;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -13,17 +14,24 @@ use Illuminate\Support\Facades\Log;
 class QLController extends Controller
 {
     public function bind(Request $request){
-
-        $queryType = new ObjectType([
-            'name' => 'User',
+        $userType = new ObjectType([
+            'name' => 'userType',
             'fields' => [
-                'hello' => [
+                'name' => [
                     'type' => Type::string(),
                     'resolve' => function($rootVal , $args): string{
-                        Log::info("HELLO IN RESOLVER");
-
-                        return "HELLOS";
+                        return "Hossein";
                     }
+                ],
+            ]
+        ]);
+
+        $queryType = new ObjectType([
+            'name' => 'Query',
+            'fields' => [
+                'user' => [
+                    'type' => $userType,
+                    'resolve' => fn() => ""
                 ],
             ]
         ]);
@@ -31,10 +39,12 @@ class QLController extends Controller
         $schema = new Schema(
             (new SchemaConfig())->setQuery($queryType)
         );
-
+        $re = SchemaPrinter::doPrint($schema);
+//        Log::info($re);
+//        dd();
         $query = $request->input('query');
         try {
-            $result = GraphQL::executeQuery($schema , $query , [] , null , []);
+            $result = GraphQL::executeQuery($schema , $query , $userType , null , []);
             Log::info("",[$result]);
             $output = $result->toArray();
         }catch (\Exception $e){

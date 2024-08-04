@@ -27,6 +27,8 @@ class QLGenerator
     public function __construct(
         string $modelPath
     ) {
+        $mod = new $modelPath();
+
         $this->reflection = new ReflectionClass(
             new $modelPath()
         );
@@ -56,8 +58,8 @@ class QLGenerator
         $this->extractQueriesAndMutations();
 
 
-        $this->QLModel->buildQuires();
-        $this->QLModel->buildMutations();
+        $qu = $this->QLModel->buildQuires();
+        // $this->QLModel->buildMutations();
     }
 
     private function extractDataOnce(): void

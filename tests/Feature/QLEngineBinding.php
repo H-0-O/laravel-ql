@@ -19,9 +19,12 @@ class QLEngineBinding extends TestCase
 
     public function testBind(){
         $re = $this->postJson('/graphql' , [
-            'query' => <<<GQL
-                {
-                    hello
+            'query' => <<<'GQL'
+                query{
+                    user{
+                        name
+                        id
+                    }
                 }
 
              GQL
