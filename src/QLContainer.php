@@ -3,6 +3,7 @@
 namespace LaravelQL\LaravelQL;
 
 use App\Models\User;
+use LaravelQL\LaravelQL\Core\RootQuery;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use RecursiveDirectoryIterator;
@@ -11,6 +12,7 @@ use ReflectionException;
 
 class QLContainer
 {
+    private static RootQuery $rootQuery;
     private static array $models;
 
     private static array $types = [];

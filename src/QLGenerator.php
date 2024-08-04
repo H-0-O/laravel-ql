@@ -2,8 +2,7 @@
 
 namespace LaravelQL\LaravelQL;
 
-use Illuminate\Database\Eloquent\Model;
-use LaravelQL\LaravelQL\Core\QLModel;
+use LaravelQL\LaravelQL\Core\Attributes\QLModel;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use ReflectionClass;
@@ -83,5 +82,10 @@ class QLGenerator
     public function getQLModelName(): string
     {
         return $this->QLModel->typeName;
+    }
+
+    public function getDescription(): string
+    {
+        return "DEC";
     }
 }

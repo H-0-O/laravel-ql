@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use LaravelQL\LaravelQL\Core\QLModel;
+use LaravelQL\LaravelQL\Core\Attributes\QLModel;
 use LaravelQL\LaravelQL\Core\Types;
 
 #[QLModel]
@@ -27,25 +27,35 @@ class User extends Model
 //        'friends' => Types::Array
 //    ];
 
+    #[QLFields]
+    private $fields = [
+        'name' => Types::String,
+        'user' => [User::class  , Types::String , null],
+    ];
 
 
-    public function queryUser(): string{
+    //these must add to RootQuery
+    #[QLQuery]
+    public function user(): string{
         return  "H";
     }
 
-    public function queryUsers(): self{
-
+    #[QLQuery]
+    public function users(): self{
         return $this;
     }
 
-    public function mutCreateUser(){
+    #[QLMutation]
+    public function createUser(){
 
     }
 
+    #[QLMutation]
     public function mutUpdateUser(){
 
     }
 
+    #[QLMutation]
     public function mutDeleteUser(){
 
     }

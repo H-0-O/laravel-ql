@@ -1,9 +1,8 @@
 <?php
 
-namespace LaravelQL\LaravelQL\Core;
+namespace LaravelQL\LaravelQL\Core\Attributes;
 
 use Attribute;
-use Exception;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use ReflectionMethod;
@@ -39,7 +38,7 @@ class QLModel
      */
     public function buildQuires(): array
     {
-        
+
         $buildQueries = [];
         foreach ($this->queries as $queryMethod) {
 
@@ -47,7 +46,7 @@ class QLModel
             $fieldName = $queryMethod->getName();
 
 
-            //TODO the return type aren't always scalar , and must search the QLContainer for the custom types 
+            //TODO the return type aren't always scalar , and must search the QLContainer for the custom types
             $buildQueries['fields'][$fieldName] = [
                 'resolve' => fn() => "Must write a dynamic resolver",
                 'type'    => $returnType
@@ -80,7 +79,7 @@ class QLModel
 
         $returnType = $method->getReturnType();
         //TODO remove this condition later
-        
+
         if ($returnType instanceof ReflectionUnionType) {
             throw new RuntimeException("Unions are not supported currently  ");
         }
