@@ -26,13 +26,15 @@ class QLGenerator
     public function __construct(
         string $modelPath
     ) {
-        $mod = new $modelPath();
 
         $this->reflection = new ReflectionClass(
             new $modelPath()
         );
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function createBaseConf(): bool
     {
 
@@ -40,8 +42,8 @@ class QLGenerator
         if (count($attrs) === 0) {
             return false;
         }
-
-        $this->QLModel = new QLModel();
+        $dtoClass = $attrs[0]->getArguments()[0];
+        $this->QLModel = new QLModel($dtoClass);
         //TODO later here must check that user enter custom name or no
         $this->QLModel->typeName = $this->reflection->getShortName();
         return true;

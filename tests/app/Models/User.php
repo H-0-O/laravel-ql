@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use LaravelQL\LaravelQL\Core\Attributes\QLModel;
 use LaravelQL\LaravelQL\Core\Types;
 
-#[QLModel]
+#[QLModel(UserDTO::class)]
 class User extends Model
 {
     const QL_Name = "User";

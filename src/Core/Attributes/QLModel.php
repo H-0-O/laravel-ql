@@ -5,6 +5,7 @@ namespace LaravelQL\LaravelQL\Core\Attributes;
 use Attribute;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionUnionType;
 use RuntimeException;
@@ -18,8 +19,18 @@ class QLModel
     private array $queries = [];
 
     private array $mutations = [];
+    private DTO $DTO;
+    /**
+     * @throws \ReflectionException
+     */
+    public function __construct(
+         string $DTOClass
+    ) {
+        $this->DTO = new DTO($DTOClass);
+    }
 
-    public function initialQuery(){
+    public function initialQuery()
+    {
         $this->queries = [
             'name' => $this->typeName,
             'description' => '',
@@ -27,7 +38,8 @@ class QLModel
         ];
     }
 
-    public function initialMutation(){
+    public function initialMutation()
+    {
 
     }
 
@@ -49,7 +61,7 @@ class QLModel
             //TODO the return type aren't always scalar , and must search the QLContainer for the custom types
             $buildQueries['fields'][$fieldName] = [
                 'resolve' => fn() => "Must write a dynamic resolver",
-                'type'    => $returnType
+                'type' => $returnType
             ];
         }
 
