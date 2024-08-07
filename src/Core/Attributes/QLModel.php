@@ -6,6 +6,7 @@ use Attribute;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionUnionType;
 use RuntimeException;
@@ -15,22 +16,22 @@ class QLModel
 {
     public string $typeName = "";
 
+    public string $longName = "";
+
     /** @var array<ReflectionMethod> */
     private array $queries = [];
 
     private array $mutations = [];
     private DTO $DTO;
-    /**
-     * @throws \ReflectionException
-     */
+
     public function __construct(
-         string $DTOClass
+         private readonly  string $DTOClass
     ) {
-        $this->DTO = new DTO($DTOClass);
     }
 
     public function initialQuery()
     {
+
         $this->queries = [
             'name' => $this->typeName,
             'description' => '',
@@ -118,4 +119,12 @@ class QLModel
         $this->mutations[] = $method;
     }
 
+
+    /**
+     * @throws ReflectionException
+     */
+    public function createTypeFromDTO(){
+        $this->DTO = new DTO($this->DTOClass);
+
+    }
 }

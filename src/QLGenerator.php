@@ -33,7 +33,7 @@ class QLGenerator
     }
 
     /**
-     * @throws ReflectionException
+     * @return bool
      */
     public function createBaseConf(): bool
     {
@@ -46,20 +46,20 @@ class QLGenerator
         $this->QLModel = new QLModel($dtoClass);
         //TODO later here must check that user enter custom name or no
         $this->QLModel->typeName = $this->reflection->getShortName();
+        $this->QLModel->longName = $this->reflection->getName();
         return true;
     }
 
     /**
-     * @throws QueryMustHaveReturnTypeException
-     * @throws InvalidReturnTypeException
      */
     public function generate(): void
     {
-        $this->extractDataOnce();
-        $this->extractQueriesAndMutations();
+        //first we need to create the type
+        $this->QLModel->createTypeFromDTO();
+//        $this->extractDataOnce();
+//        $this->extractQueriesAndMutations();
 
-
-        $qu = $this->QLModel->buildQuires();
+//        $qu = $this->QLModel->buildQuires();
         // $this->QLModel->buildMutations();
     }
 
@@ -86,6 +86,9 @@ class QLGenerator
         return $this->QLModel->typeName;
     }
 
+    public function getQLModelLongName(): string{
+        return $this->QLModel->longName;
+    }
     public function getDescription(): string
     {
         return "DEC";

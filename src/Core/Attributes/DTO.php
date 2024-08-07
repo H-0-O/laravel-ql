@@ -5,7 +5,9 @@ namespace LaravelQL\LaravelQL\Core\Attributes;
 
 use Attribute;
 use GraphQL\Type\Definition\Type;
+use LaravelQL\LaravelQL\QLContainer;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 use ReflectionType;
 use stdClass;
@@ -17,7 +19,8 @@ class DTO
     private array $properties;
 
     /**
-     * @throws \ReflectionException
+     * @param  string|null  $dtoClass
+     * @throws ReflectionException
      */
     public function __construct(
         string $dtoClass = null
@@ -48,7 +51,7 @@ class DTO
                             $type->getName(),
                             $types?->allowsNull());
                     }else{
-                        dd($type);
+                        self::getCustomType($type->getName() , $type->allowsNull());
                     }
                 }
             }
@@ -77,6 +80,8 @@ class DTO
     }
 
     private static function getCustomType($typeName , $allowedNull){
-
+        $re = &QLContainer::getCustomType($typeName);
+        $ww = QLContainer::$types[$typeName]->ql;
+        dd($re , $ww);
     }
 }

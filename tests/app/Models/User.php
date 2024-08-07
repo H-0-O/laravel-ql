@@ -11,7 +11,6 @@ class User extends Model
 {
     const QL_Name = "User";
 
-    #[QLFields]
     protected $fillable = [
       'name',
     ];
