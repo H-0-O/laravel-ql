@@ -56,10 +56,10 @@ class QLGenerator
     {
         //first we need to create the type
         $this->QLModel->createTypeFromDTO();
-//        $this->extractDataOnce();
-//        $this->extractQueriesAndMutations();
+        //        $this->extractDataOnce();
+        //        $this->extractQueriesAndMutations();
 
-//        $qu = $this->QLModel->buildQuires();
+        //        $qu = $this->QLModel->buildQuires();
         // $this->QLModel->buildMutations();
     }
 
@@ -75,7 +75,7 @@ class QLGenerator
             $name = $modelMethod->getName();
             if (str_starts_with($name, "query") && $name !== "query") {
                 $this->QLModel->addQueryMethod($modelMethod);
-            } elseif (str_starts_with($name, "mut") && $name !== "mut" ) {
+            } elseif (str_starts_with($name, "mut") && $name !== "mut") {
                 $this->QLModel->addMutationMethod($modelMethod);
             }
         }
@@ -86,7 +86,8 @@ class QLGenerator
         return $this->QLModel->typeName;
     }
 
-    public function getQLModelLongName(): string{
+    public function getQLModelLongName(): string
+    {
         return $this->QLModel->longName;
     }
     public function getDescription(): string

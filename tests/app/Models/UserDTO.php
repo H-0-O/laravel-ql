@@ -3,12 +3,13 @@
 namespace App\Models;
 
 
-use LaravelQL\LaravelQL\Core\Attributes\DTO;
+use LaravelQL\LaravelQL\Core\Attributes\QLDTO;
 use LaravelQL\LaravelQL\Core\Attributes\Skip;
 
-#[DTO]
+#[QLDTO]
 class UserDTO
 {
+    public User $LName;
     public string|int|User $name;
 
     #[Skip]

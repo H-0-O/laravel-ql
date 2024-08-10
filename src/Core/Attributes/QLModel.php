@@ -6,7 +6,6 @@ use Attribute;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use ReflectionUnionType;
 use RuntimeException;
@@ -14,71 +13,20 @@ use RuntimeException;
 #[Attribute]
 class QLModel
 {
+    /**
+     * it uses as Type name in the schema 
+     *
+     * @var string
+     */
     public string $typeName = "";
 
-    public string $longName = "";
+    public string $typeNameWithPath = "";
 
-    /** @var array<ReflectionMethod> */
-    private array $queries = [];
-
-    private array $mutations = [];
-    private DTO $DTO;
-
-    public function __construct(
-         private readonly  string $DTOClass
-    ) {
-    }
-
-    public function initialQuery()
-    {
-
-        $this->queries = [
-            'name' => $this->typeName,
-            'description' => '',
-            'fields' => []
-        ];
-    }
-
-    public function initialMutation()
-    {
-
-    }
+    public ReflectionClass $reflection;
 
 
-    /**
-     * @throws InvalidReturnTypeException
-     * @throws QueryMustHaveReturnTypeException
-     */
-    public function buildQuires(): array
-    {
+    public function __construct() {}
 
-        $buildQueries = [];
-        foreach ($this->queries as $queryMethod) {
-
-            $returnType = $this->getReturnType($queryMethod);
-            $fieldName = $queryMethod->getName();
-
-
-            //TODO the return type aren't always scalar , and must search the QLContainer for the custom types
-            $buildQueries['fields'][$fieldName] = [
-                'resolve' => fn() => "Must write a dynamic resolver",
-                'type' => $returnType
-            ];
-        }
-
-        return $buildQueries;
-    }
-
-    public function buildMutations()
-    {
-
-    }
-
-
-    public function generateFields(ReflectionMethod $method)
-    {
-        $returnType = $method->getReturnType();
-    }
 
     /**
      * @throws QueryMustHaveReturnTypeException
@@ -107,24 +55,5 @@ class QLModel
     private function getQueryType(ReflectionMethod $method)
     {
         return $method->getReturnType();
-    }
-
-    public function addQueryMethod(ReflectionMethod $method): void
-    {
-        $this->queries[] = $method;
-    }
-
-    public function addMutationMethod(ReflectionMethod $method): void
-    {
-        $this->mutations[] = $method;
-    }
-
-
-    /**
-     * @throws ReflectionException
-     */
-    public function createTypeFromDTO(){
-        $this->DTO = new DTO($this->DTOClass);
-
     }
 }

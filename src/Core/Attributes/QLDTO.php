@@ -5,30 +5,41 @@ namespace LaravelQL\LaravelQL\Core\Attributes;
 
 use Attribute;
 use GraphQL\Type\Definition\Type;
-use LaravelQL\LaravelQL\QLContainer;
 use ReflectionClass;
-use ReflectionException;
+use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
-use stdClass;
 
 #[Attribute]
-class DTO
+class QLDTO
 {
-    private ReflectionClass $reflection;
+    public ReflectionClass $reflection;
+
     private array $properties;
 
-    /**
-     * @param  string|null  $dtoClass
-     * @throws ReflectionException
-     */
-    public function __construct(
-        string $dtoClass = null
-    ) {
-        $this->reflection = new ReflectionClass($dtoClass);
-        $this->setProperties();
+    public function getFields(): array
+    {
+        $props = $this->reflection->getProperties();
+        $fields = [];
+
+        foreach ($props as $prop) {
+            // here we set property name as a field of ObjectType
+            /** @var ReflectionProperty $prop */
+            $fields[$prop->getName()] = [];
+            $type = $this->getPropertyType($prop);
+        }
+        dd($props);
+        return [];
     }
 
+    private function getPropertyType(ReflectionProperty $prop)
+    {
+        $type = $prop->getType();
+        if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
+            return $this->getBuiltInType($type->getName(), $type->allowsNull());
+        }
+        dd($type);
+    }
 
     private function setProperties(): void
     {
@@ -38,38 +49,37 @@ class DTO
             return count($hasSkip) === 0; //means if the property doesn't use the Skip flag
         });
 
-        array_map(static function($property){
+        array_map(static function ($property) {
             /** @var ReflectionProperty $property */
             $types = $property->getType();
             $final = [];
             if (method_exists($types, "getTypes")) { //it's a union
                 foreach ($types?->getTypes() as $type) {
                     /** @var ReflectionType $type */
-//                    dd($type)
+                    //                    dd($type)
                     if ($type->isBuiltin() && $type->getName() !== 'null') {
                         $final[$property->name]['types'][] = self::getBuiltInType(
                             $type->getName(),
-                            $types?->allowsNull());
-                    }else{
-                        self::getCustomType($type->getName() , $type->allowsNull());
+                            $types?->allowsNull()
+                        );
+                    } else {
+                        self::getCustomType($type->getName(), $type->allowsNull());
                     }
                 }
             }
-            dd("NANO" , $final);
+            dd("NANO", $final);
             $arr = [
-              $property->name => [
+                $property->name => [
                     'type' => $types
-              ]
+                ]
             ];
-
-        } , $props);
-//        dd($this->properties);
-    }
-    public function getProperties(){
-        return $this->properties;
+        }, $props);
+        //        dd($this->properties);
     }
 
-    private static function getBuiltInType(string $type , $allowedNull): mixed{
+
+    private function getBuiltInType(string $type, $allowedNull): mixed
+    {
         $theType =  match ($type) {
             'string' => Type::string(),
             'int' => Type::int(),
@@ -79,9 +89,10 @@ class DTO
         return $allowedNull ? $theType : Type::nonNull($theType);
     }
 
-    private static function getCustomType($typeName , $allowedNull){
+    private static function getCustomType($typeName, $allowedNull)
+    {
         $re = &QLContainer::getCustomType($typeName);
         $ww = QLContainer::$types[$typeName]->ql;
-        dd($re , $ww);
+        dd($re, $ww);
     }
 }
