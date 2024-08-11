@@ -1,6 +1,7 @@
 <?php
 
 namespace LaravelQL\LaravelQL\Http\Controllers;
+
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -10,48 +11,57 @@ use GraphQL\Utils\SchemaPrinter;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use LaravelQL\LaravelQL\QLHandler;
+use LaravelQL\LaravelQL\QLType;
 
 class QLController extends Controller
 {
-    public function bind(Request $request){
-        $userType = new ObjectType([
-            'name' => 'userType',
-            'fields' => [
-                'name' => [
-                    'type' => Type::string(),
-                    'resolve' => function($rootVal , $args): string{
-                        return "Hossein";
-                    }
-                ],
-            ]
-        ]);
+    public function bind(Request $request)
+    {
 
-        $queryType = new ObjectType([
+        $qlHandler = QLHandler::getInstance();
+
+        // $userType = new ObjectType([
+        //     'name' => 'userType',
+        //     'fields' => [
+        //         'name' => [
+        //             'type' => Type::string(),
+        //             'resolve' => function ($rootVal, $args): string {
+        //                 return "Hossein";
+        //             }
+        //         ],
+        //     ]
+        // ]);
+
+        $config = [
             'name' => 'Query',
-            'fields' => [
-                'user' => [
-                    'type' => $userType,
-                    'resolve' => fn() => ""
-                ],
-            ]
-        ]);
+            'fields' => []
+        ];
+
+        foreach ($qlHandler->getTypesMap() as $type) {
+            /** @var QLType $type */
+            $config['fields'][$type->getTypeName()] = $type->objectType;
+        }
+        $queryType = new ObjectType(
+            $config
+        );
 
         $schema = new Schema(
             (new SchemaConfig())->setQuery($queryType)
         );
         $re = SchemaPrinter::doPrint($schema);
-//        Log::info($re);
-//        dd();
+        Log::info($re);
+        dd();
         $query = $request->input('query');
         try {
-            $result = GraphQL::executeQuery($schema , $query , $userType , null , []);
-            Log::info("",[$result]);
+            $result = GraphQL::executeQuery($schema, $query, $userType, null, []);
+            Log::info("", [$result]);
             $output = $result->toArray();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $output = [
-              'errors' => [
-                  'message' => $e->getMessage()
-              ]
+                'errors' => [
+                    'message' => $e->getMessage()
+                ]
             ];
         }
         return response()->json($output);

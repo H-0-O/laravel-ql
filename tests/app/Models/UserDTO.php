@@ -9,9 +9,8 @@ use LaravelQL\LaravelQL\Core\Attributes\Skip;
 #[QLDTO]
 class UserDTO
 {
-    public User $LName;
-    public string|int|User $name;
 
-    #[Skip]
-    public string $rel_id;
+    public string $fname;
+    public string $lname;
+    // public User $user;
 }

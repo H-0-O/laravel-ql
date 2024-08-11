@@ -5,10 +5,12 @@ namespace LaravelQL\LaravelQL\Core\Attributes;
 
 use Attribute;
 use GraphQL\Type\Definition\Type;
+use LaravelQL\LaravelQL\QLHandler;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
+use ReflectionUnionType;
 
 #[Attribute]
 class QLDTO
@@ -25,20 +27,47 @@ class QLDTO
         foreach ($props as $prop) {
             // here we set property name as a field of ObjectType
             /** @var ReflectionProperty $prop */
-            $fields[$prop->getName()] = [];
-            $type = $this->getPropertyType($prop);
+            $fields[$prop->getName()] = $this->getTypeAndResolve($prop);
         }
-        dd($props);
-        return [];
+        return $fields;
     }
 
-    private function getPropertyType(ReflectionProperty $prop)
+    private function getTypeAndResolve(ReflectionProperty $prop): array
     {
         $type = $prop->getType();
-        if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
-            return $this->getBuiltInType($type->getName(), $type->allowsNull());
+
+        if ($type instanceof ReflectionUnionType) {
+            $types = [];
+            foreach ($type->getTypes() as $subType) {
+                $types[] = $subType->isBuiltin() ? $this->getBuiltInType($subType->getName(), $subType->allowsNull())
+                    : $this->resolveCustomType($subType->getName(), $subType->allowsNull());
+            }
+
+            dd("This is unimplemented yet");
+
+            return [
+                'types' => $types,
+            ];
         }
-        dd($type);
+
+
+        if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
+            return [
+                'type' => $this->getBuiltInType($type->getName(), $type->allowsNull()),
+                'resolve' => fn() => 'I need dynamic resolver'
+            ];
+        }
+
+
+
+
+        if ($type instanceof ReflectionType) {
+            // $resolvedType = $this->resolveCustomType($type->getName(), $type->allowsNull());
+            // return [
+            //     'type' => $resolvedType,
+            //     'resolve' => fn() => ''
+            // ];
+        }
     }
 
     private function setProperties(): void

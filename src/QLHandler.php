@@ -3,6 +3,7 @@
 namespace LaravelQL\LaravelQL;
 
 use GraphQL\Type\Definition\ObjectType;
+use Illuminate\Foundation\Mix;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
@@ -66,13 +67,13 @@ class QLHandler
             $qlType = new QLType($modelPath);
             if ($qlType->initQLModel()) {
                 $qlType->initQLDTO();
-                $this->typesMap[$qlType->getTypeName()] = $qlType;
+                $this->typesMap[$qlType->getTypeNameWithPath()] = $qlType;
             }
         }
     }
 
 
-    private function generateNoneRootTypes()
+    private function generateNoneRootTypes(): void
     {
         // dd(array_keys($this->typesMap));
         foreach ($this->typesMap as $type) {
@@ -80,19 +81,9 @@ class QLHandler
             /** @var QLType $type */
             $type->initObjectType();
         }
-        $types = [
-            [
-                'name' => 'TypeName',
-                'fields' => [
-                    'name' => [
-                        'type' => ''
-                    ]
-                ]
-            ]
-        ];
     }
 
-    private function extractFromApp(string $str)
+    private function extractFromApp(string $str): string
     {
 
         // Find the position of the word 'app'
@@ -108,5 +99,11 @@ class QLHandler
     private function convertPathToClass($path): string
     {
         return str_replace(array("/", ".php"), array("\\", ""), $path);
+    }
+
+
+    public function getTypesMap(): array
+    {
+        return $this->typesMap;
     }
 }

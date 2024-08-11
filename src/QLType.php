@@ -16,7 +16,7 @@ class QLType
 
     private QLDTO $QLDTO;
 
-    private ObjectType|null $objectType = null;
+    public ObjectType|null $objectType = null;
 
     public function __construct(private string $modelPath) {}
 
@@ -63,12 +63,13 @@ class QLType
     }
 
 
-    public function initObjectType()
+    public function initObjectType(): void
     {
         $config = [
             'name' => $this->getTypeName(),
             'fields' => $this->QLDTO->getFields()
         ];
+        $this->objectType = new ObjectType($config);
     }
 
     /**
@@ -79,5 +80,10 @@ class QLType
     public function getTypeName(): string
     {
         return $this->QLModel->typeName;
+    }
+
+    public function getTypeNameWithPath(): string
+    {
+        return $this->QLModel->typeNameWithPath;
     }
 }
