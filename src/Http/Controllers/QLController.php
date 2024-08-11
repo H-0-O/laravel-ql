@@ -13,6 +13,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use LaravelQL\LaravelQL\QLHandler;
 use LaravelQL\LaravelQL\QLType;
+use LaravelQL\LaravelQL\Registry\QLTypeLoader;
 
 class QLController extends Controller
 {
@@ -54,7 +55,7 @@ class QLController extends Controller
         dd();
         $query = $request->input('query');
         try {
-            $result = GraphQL::executeQuery($schema, $query, $userType, null, []);
+            $result = GraphQL::executeQuery($schema, $query, null, null, []);
             Log::info("", [$result]);
             $output = $result->toArray();
         } catch (\Exception $e) {

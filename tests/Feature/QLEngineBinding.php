@@ -17,8 +17,9 @@ class QLEngineBinding extends TestCase
         $app->setBasePath(dirname(__DIR__));
     }
 
-    public function testBind(){
-        $re = $this->postJson('/graphql' , [
+    public function testBind()
+    {
+        $re = $this->postJson('/graphql', [
             'query' => <<<'GQL'
                 query{
                     user{
@@ -29,7 +30,7 @@ class QLEngineBinding extends TestCase
 
              GQL
 
-        ] , self::HEADERS);
+        ], self::HEADERS);
 
         var_dump($re->original);
         die();

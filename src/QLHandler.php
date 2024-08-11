@@ -2,12 +2,13 @@
 
 namespace LaravelQL\LaravelQL;
 
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Foundation\Mix;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
-use stdClass;
 
 class QLHandler
 {
@@ -105,5 +106,12 @@ class QLHandler
     public function getTypesMap(): array
     {
         return $this->typesMap;
+    }
+
+    public function __call($name, $arguments): ObjectType|NonNull
+    {
+        $allowNull = $arguments[0];
+        $type = $this->typesMap[$name]->objectType;
+        return $allowNull ?  $type : Type::nonNull($type);
     }
 }

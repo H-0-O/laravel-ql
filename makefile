@@ -2,6 +2,6 @@
 .PHONY: test-f
 
 test-f:
-	vendor/bin/phpunit --testsuite=Feature
+	rm -f storage/logs/QL.log && vendor/bin/phpunit --testsuite=Feature
 
 

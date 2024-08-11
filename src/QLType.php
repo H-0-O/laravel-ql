@@ -16,7 +16,7 @@ class QLType
 
     private QLDTO $QLDTO;
 
-    public ObjectType|null $objectType = null;
+    public ObjectType $objectType;
 
     public function __construct(private string $modelPath) {}
 
@@ -42,7 +42,7 @@ class QLType
     }
 
 
-    public function initQLDTO()
+    public function initQLDTO(): void
     {
         $qlModelAttributes = $this->QLModel->reflection->getAttributes(QLModel::class);
         $dtoPath = $qlModelAttributes[0]->getArguments()[0];
