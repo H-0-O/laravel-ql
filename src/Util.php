@@ -41,7 +41,6 @@ class Util
         string $class,
     ): callable|ScalarType|NonNull|ListOfType|null {
 
-        //TODO fix the !! (double NonNull) in arrays
 
         if ($type === null) {
             return null;
