@@ -1,0 +1,23 @@
+providers:
+  # - Workbench\App\Providers\WorkbenchServiceProvider
+  - LaravelQL\LaravelQL\LaravelQLServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
+
+workbench:
+  start: '/'
+  install: true
+  health: false
+  discovers:
+    web: true
+    api: true
+    commands: false
+    components: false
+    views: false
+  build: []
+  assets: []
+  sync: []

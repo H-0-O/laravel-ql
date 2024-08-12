@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.2/phpunit.xsd" cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="Feature">
+            <directory suffix=".php">tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory suffix=".php">tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_DEBUG" value="true"/>
+        <env name="LARAVEL_QL_DEBUG" value="true"/>
+        <env name="APP_ENV" value="local"/>
+    </php>
+</phpunit>

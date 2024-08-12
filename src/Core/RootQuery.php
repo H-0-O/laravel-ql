@@ -2,7 +2,7 @@
 
 namespace LaravelQL\LaravelQL\Core;
 
-class QLType
+class RootQuery
 {
-    public string $name;
+    public array $types = [];
 }
