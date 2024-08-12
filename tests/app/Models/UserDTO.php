@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Models\Game\Game;
 use LaravelQL\LaravelQL\Core\Attributes\QLDTO;
-use LaravelQL\LaravelQL\Core\Attributes\QLUnion;
-use LaravelQL\LaravelQL\Core\Attributes\Skip;
+use LaravelQL\LaravelQL\Core\Attributes\QLArray;
 
 #[QLDTO]
 class UserDTO
 {
+    #[QLArray('string')]
+    public array $games;
 
     public ?string $fname;
 

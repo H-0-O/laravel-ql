@@ -4,60 +4,51 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use LaravelQL\LaravelQL\Core\Attributes\QLModel;
-use LaravelQL\LaravelQL\Core\Types;
+use LaravelQL\LaravelQL\Core\Attributes\QLQuery;
+use LaravelQL\LaravelQL\Core\Attributes\QLArray;
 
 #[QLModel(UserDTO::class)]
 class User extends Model
 {
-    const QL_Name = "User";
+
 
     protected $fillable = [
-      'name',
+        'name',
     ];
 
     protected $guarded = [
-      'password'
+        'password'
     ];
 
 
-//    const fields = [
-//        'name' => [Types::String , Types::Int],
-//        'age' => Types::Int,
-//        'friends' => Types::Array
-//    ];
-
-    #[QLFields]
-    private $fields = [
-        'name' => Types::String,
-        'user' => [User::class  , Types::String , null],
-    ];
-
+    #[QLQuery]
+    #[QLArray('int')]
+    public function games(): array
+    {
+        return [];
+    }
 
     //these must add to RootQuery
     #[QLQuery]
-    public function user(): string{
+    #[QLArray]
+    public function user(): string
+    {
         return  "H";
     }
 
     #[QLQuery]
-    public function users(): self{
+    public function users(): self
+    {
         return $this;
     }
 
-    #[QLMutation]
-    public function createUser(){
-
-    }
 
     #[QLMutation]
-    public function mutUpdateUser(){
-
-    }
+    public function createUser() {}
 
     #[QLMutation]
-    public function mutDeleteUser(){
+    public function mutUpdateUser() {}
 
-    }
-
-
+    #[QLMutation]
+    public function mutDeleteUser() {}
 }
