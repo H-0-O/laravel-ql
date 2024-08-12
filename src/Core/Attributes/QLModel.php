@@ -5,6 +5,7 @@ namespace LaravelQL\LaravelQL\Core\Attributes;
 use Attribute;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
+use LaravelQL\LaravelQL\Util;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionUnionType;
@@ -25,6 +26,16 @@ class QLModel
     public ReflectionClass $reflection;
 
 
+    /** 
+     * here we hold function that has #[QLQuery] Attribute
+     * @var array
+     */
+    private array $queries = [];
+
+    /**
+     * This attribute tell Laravel-ql that , I want to use this model as Graphql 
+     * @param string $DTO
+     */
     public function __construct() {}
 
 
@@ -52,8 +63,32 @@ class QLModel
         return $returnType->getName();
     }
 
-    private function getQueryType(ReflectionMethod $method)
+
+    public function generateQuires(): void
     {
-        return $method->getReturnType();
+        $methods = $this->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+        $methods = array_filter($methods, function (ReflectionMethod $method) {
+            $attributes = $method->getAttributes(QLQuery::class);
+            return count($attributes) > 0;
+        });
+
+        $class = $this->reflection->getName();
+        foreach ($methods as $method) {
+            if (!$method->hasReturnType()) {
+                throw new QueryMustHaveReturnTypeException("You must define a `return type` for $method->name in $class");
+            }
+
+            $type = Util::resolveType($method->getReturnType(), $method->getAttributes(), $method->getName(), $class);
+            $this->queries[$method->getName()] = [
+                'type' => $type
+            ];
+        }
+        dd($this->queries);
+    }
+
+
+    public function getQueries(): array
+    {
+        return $this->queries;
     }
 }

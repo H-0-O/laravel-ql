@@ -41,7 +41,7 @@ class QLController extends Controller
 
         foreach ($qlHandler->getTypesMap() as $type) {
             /** @var QLType $type */
-            $config['fields'][$type->getTypeName()] = $type->objectType;
+            $config['fields'][$type->getTypeName()] = $type->getObjectType();
         }
         $queryType = new ObjectType(
             $config

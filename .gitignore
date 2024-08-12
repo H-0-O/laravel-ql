@@ -4,3 +4,4 @@ composer.lock
 *.lock
 *.cache
 *.log
+.vscode

@@ -5,6 +5,7 @@ namespace LaravelQL\LaravelQL;
 use GraphQL\Type\Definition\ObjectType;
 use LaravelQL\LaravelQL\Core\Attributes\QLDTO;
 use LaravelQL\LaravelQL\Core\Attributes\QLModel;
+use LaravelQL\LaravelQL\Core\Attributes\QLQuery;
 use LaravelQL\LaravelQL\Exceptions\DTOAttributeMissing;
 use LaravelQL\LaravelQL\Exceptions\DTOPathIsEmpty;
 use ReflectionClass;
@@ -16,7 +17,9 @@ class QLType
 
     private QLDTO $QLDTO;
 
-    public ObjectType $objectType;
+    private ObjectType $objectType;
+
+    private array $queries = [];
 
     public function __construct(private string $modelPath) {}
 
@@ -72,6 +75,11 @@ class QLType
         $this->objectType = new ObjectType($config);
     }
 
+    public function initQueries()
+    {
+        $this->QLModel->generateQuires();
+    }
+
     /**
      * we use the this for internal 
      *
@@ -85,5 +93,15 @@ class QLType
     public function getTypeNameWithPath(): string
     {
         return $this->QLModel->typeNameWithPath;
+    }
+
+    public function getObjectType(): ObjectType
+    {
+        return $this->objectType;
+    }
+
+    public function getQueries()
+    {
+        return $this->QLModel->getQueries();
     }
 }

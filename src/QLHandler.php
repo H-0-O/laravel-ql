@@ -5,7 +5,6 @@ namespace LaravelQL\LaravelQL;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Foundation\Mix;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
@@ -17,9 +16,11 @@ class QLHandler
     /**
      * here we hold the types(none root type) , we keep dto class name as a key (name of type) , and the value of it is the instance of QLType
      *
-     * @var array
+     * @var QLType[]
      */
     private array $typesMap = [];
+
+
 
     public static function getInstance()
     {
@@ -37,9 +38,10 @@ class QLHandler
         $modelsPath = $this->grepModels();
         $this->initialTypes($modelsPath);
         $this->generateNoneRootTypes();
+        $this->generateRootTypes();
     }
 
-    public function grepModels(): array
+    private function grepModels(): array
     {
         if (env('APP_ENV') == 'local') {
             $path = base_path() . '/app/Models/';
@@ -76,11 +78,15 @@ class QLHandler
 
     private function generateNoneRootTypes(): void
     {
-        // dd(array_keys($this->typesMap));
         foreach ($this->typesMap as $type) {
-
-            /** @var QLType $type */
             $type->initObjectType();
+        }
+    }
+
+    private function generateRootTypes()
+    {
+        foreach ($this->typesMap as $type) {
+            $type->initQueries();
         }
     }
 
@@ -111,7 +117,7 @@ class QLHandler
     public function __call($name, $arguments): ObjectType|NonNull
     {
         $allowNull = $arguments[0];
-        $type = $this->typesMap[$name]->objectType;
+        $type = $this->typesMap[$name]->getObjectType();
         return $allowNull ?  $type : Type::nonNull($type);
     }
 }
