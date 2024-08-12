@@ -16,8 +16,6 @@ class LaravelQLServiceProvider extends ServiceProvider
         $handler = QLHandler::getInstance();
 
         $handler->handle();
-        // QLContainer::grepModels();
-        // QLContainer::generate();
     }
 
     public function register()
