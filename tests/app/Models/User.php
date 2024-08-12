@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Game\Game;
 use Illuminate\Database\Eloquent\Model;
 use LaravelQL\LaravelQL\Core\Attributes\QLModel;
 use LaravelQL\LaravelQL\Core\Attributes\QLQuery;
@@ -22,8 +23,8 @@ class User extends Model
 
 
     #[QLQuery]
-    #[QLArray('int')]
-    public function games(): array
+    #[QLArray(Game::class)]
+    public function games(): ?array
     {
         return [];
     }
@@ -37,9 +38,9 @@ class User extends Model
     }
 
     #[QLQuery]
-    public function users(): self
+    public function users(): ?Game
     {
-        return $this;
+        return new Game();
     }
 
 

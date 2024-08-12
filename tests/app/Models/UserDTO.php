@@ -10,7 +10,7 @@ use LaravelQL\LaravelQL\Core\Attributes\QLArray;
 class UserDTO
 {
     #[QLArray('string')]
-    public array $games;
+    public ?array $games;
 
     public ?string $fname;
 

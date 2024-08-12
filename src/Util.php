@@ -39,7 +39,10 @@ class Util
         array $attributes,
         string $name,
         string $class,
-    ): callable|ScalarType|NonNull|null {
+    ): callable|ScalarType|NonNull|ListOfType|null {
+
+        //TODO fix the !! (double NonNull) in arrays
+
         if ($type === null) {
             return null;
         }
@@ -62,7 +65,7 @@ class Util
             'int' => Type::int(),
             'float' => Type::float(),
             'boolean' => Type::boolean(),
-            'array' => self::handleArrayType($attributes, $allowsNUll,  $name, $class),
+            'array' => self::handleArrayType($attributes,  $name, $class),
             'mixed' => throw new InvalidReturnTypeException("The `mixed` return type not allowed in query $name in $class"),
                 // actually it's a custom type if it isn't above types
             default => self::getLazyType($typeName, $allowsNUll)
@@ -78,7 +81,6 @@ class Util
 
     private static function handleArrayType(
         array $attributes,
-        bool $allowsNull,
         string $name,
         string $class
     ): ListOfType|NonNull {
@@ -102,10 +104,11 @@ class Util
         $innerType = self::resolveType($innerType, $attributes, $name, $class);
         $innerType = $innerTypeAllowsNull ? $innerType : Type::nonNull($innerType);
 
-        $typeList = Type::listOf($innerType);
+        // $typeList = Type::listOf($innerType);
 
+        // dd($typeList);
         // means if the type can be null pass like this [String] , else pass like this [String]!
         // some time they can Combine like this [String!] or [String!]! , this happens when the inner type is nonNull
-        return $allowsNull ? $typeList : Type::nonNull($typeList);
+        return Type::listOf($innerType);
     }
 }

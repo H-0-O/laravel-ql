@@ -83,7 +83,6 @@ class QLModel
                 'type' => $type
             ];
         }
-        dd($this->queries);
     }
 
 

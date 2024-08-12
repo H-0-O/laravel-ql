@@ -41,8 +41,11 @@ class QLController extends Controller
 
         foreach ($qlHandler->getTypesMap() as $type) {
             /** @var QLType $type */
-            $config['fields'][$type->getTypeName()] = $type->getObjectType();
+            foreach ($type->getQueries() as $queryKey => $query) {
+                $config['fields'][$queryKey] = $query;
+            }
         }
+
         $queryType = new ObjectType(
             $config
         );
@@ -50,7 +53,9 @@ class QLController extends Controller
         $schema = new Schema(
             (new SchemaConfig())->setQuery($queryType)
         );
+
         $re = SchemaPrinter::doPrint($schema);
+
         Log::info($re);
         dd();
         $query = $request->input('query');
