@@ -24,7 +24,9 @@ class QLDTO
             /** @var ReflectionProperty $prop */
             $fields[$prop->getName()] = [
                 'type' => Util::resolveType($prop->getType(), $prop->getAttributes(), $prop->getName(), $class),
-                'resolve' => fn() => "Need Dynamic Resolver"
+                'resolve' => static function ($rootVal, $args) {
+                    dd("HELLO IN DTO RESOLVE");
+                }
             ];
         }
         return $fields;

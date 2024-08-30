@@ -79,8 +79,19 @@ class QLModel
             }
 
             $type = Util::resolveType($method->getReturnType(), $method->getAttributes(), $method->getName(), $class);
-            $this->queries[$method->getName()] = [
-                'type' => $type
+            $methodName = $method->getName();
+            $modelClassName = $this->reflection->getName();
+            $args = Util::getQueryArgs($method);
+
+            //TODO must write dynamic resolver
+            $this->queries[$methodName] = [
+                'type' => $type,
+                'resolve' => static function ($rootVal, $args) use ($modelClassName, $methodName) {
+                    //TODO we must create a debug situation to log resolvers
+                    $object = resolve($modelClassName);
+                    return call_user_func_array([$object, $methodName], $args);
+                },
+                'args' => $args
             ];
         }
     }

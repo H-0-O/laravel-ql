@@ -16,6 +16,7 @@ use ReflectionUnionType;
 use LaravelQL\LaravelQL\Exceptions\UnionNotAllowedAsFieldType;
 use ReflectionIntersectionType;
 use ReflectionAttribute;
+use ReflectionMethod;
 
 class Util
 {
@@ -110,4 +111,23 @@ class Util
         // some time they can Combine like this [String!] or [String!]! , this happens when the inner type is nonNull
         return Type::listOf($innerType);
     }
+
+
+    public static function getQueryArgs(ReflectionMethod $method)
+    {
+        $args = [];
+        foreach ($method->getParameters() as $param) {
+            // dd($param->getType());
+            /** @var ReflectionParameter $param */
+            $paramName = $param->getName();
+            $args[$paramName] = [
+                'type' => Util::resolveType($param->getType(), [], "$paramName argument ", $method->class),
+            ];
+            if ($param->isDefaultValueAvailable()) {
+                $args[$paramName]['defaultValue'] = $param->getDefaultValue();
+            }
+        }
+        return $args;
+    }
+    // public static function resolveResolver() {}
 }

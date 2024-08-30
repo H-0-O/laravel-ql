@@ -22,19 +22,20 @@ class User extends Model
     ];
 
 
-    #[QLQuery]
-    #[QLArray(Game::class)]
-    public function games(): ?array
-    {
-        return [];
-    }
+    // #[QLQuery]
+    // #[QLArray('string')]
+    // public function games(): ?array
+    // {
+    //     return [
+    //         'hossein',
+    //     ];
+    // }
 
     //these must add to RootQuery
     #[QLQuery]
-    #[QLArray]
-    public function user(): string
+    public function user(int $id, string $name = "Hello"): string
     {
-        return  "H";
+        return $name ?? "empty";
     }
 
     #[QLQuery]

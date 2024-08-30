@@ -22,10 +22,7 @@ class QLEngineBinding extends TestCase
         $re = $this->postJson('/graphql', [
             'query' => <<<'GQL'
                 query{
-                    user{
-                        name
-                        id
-                    }
+                    user(id: 223)
                 }
 
              GQL
