@@ -47,7 +47,7 @@ class QLController extends Controller
             ]
         ]);
 
-        $config = [
+        $queryConfig = [
             'name' => 'Query',
             'fields' => [
                 // 'user' => [
@@ -67,25 +67,40 @@ class QLController extends Controller
             ]
         ];
 
+        $mutationConfig = [
+            'name' => 'Mutation',
+            'fields' => [],
+        ];
+
         foreach ($qlHandler->getTypesMap() as $type) {
             /** @var QLType $type */
             foreach ($type->getQueries() as $queryKey => $query) {
-                $config['fields'][$queryKey] = $query;
+                $queryConfig['fields'][$queryKey] = $query;
+            }
+
+            foreach ($type->getMutations() as $mutationKey => $mutation) {
+                $mutationConfig['fields'][$mutationKey] = $mutation;
             }
         }
 
         $queryType = new ObjectType(
-            $config
+            $queryConfig
+        );
+
+        $mutationType = new ObjectType(
+            $mutationConfig
         );
 
         $schema = new Schema(
-            (new SchemaConfig())->setQuery($queryType)
+            (new SchemaConfig())->setQuery($queryType)->setMutation($mutationType)
+
         );
 
         $re = SchemaPrinter::doPrint($schema);
 
         // Log::info($re);
-        // dd($config);
+        // dd();
+        // dd($qu);
         $query = $request->input('query');
         try {
             $result = GraphQL::executeQuery($schema, $query, null, null, [])->toArray(DebugFlag::INCLUDE_DEBUG_MESSAGE);

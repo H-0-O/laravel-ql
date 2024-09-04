@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Game\Game;
 use Illuminate\Database\Eloquent\Model;
 use LaravelQL\LaravelQL\Core\Attributes\QLModel;
-use LaravelQL\LaravelQL\Core\Attributes\QLQuery;
 
 #[QLModel(UserDTO::class)]
 class User extends Model
 {
 
+    public $timestamps = false;
 
     protected $fillable = [
         'name',
@@ -19,40 +18,4 @@ class User extends Model
     protected $guarded = [
         'password'
     ];
-
-
-    // #[QLQuery]
-    // #[QLArray('string')]
-    // public function games(): ?array
-    // {
-    //     return [
-    //         'hossein',
-    //     ];
-    // }
-
-    //TODO The QLQuery must move to DTO Class
-
-    //these must add to RootQuery
-    #[QLQuery]
-    public function user(int $id, ?string $name): string
-    {
-        return $name ?? "empty";
-    }
-
-    #[QLQuery]
-    public function users(): ?Game
-    {
-        return new Game();
-    }
-
-    public function profile() {}
-
-    #[QLMutation]
-    public function createUser() {}
-
-    #[QLMutation]
-    public function mutUpdateUser() {}
-
-    #[QLMutation]
-    public function mutDeleteUser() {}
 }

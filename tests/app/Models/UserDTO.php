@@ -3,24 +3,26 @@
 namespace App\Models;
 
 use App\Models\Game\Game;
-use Illuminate\Support\Facades\Config;
 use LaravelQL\LaravelQL\Core\Attributes\QLDTO;
 use LaravelQL\LaravelQL\Core\Attributes\QLArray;
 use LaravelQL\LaravelQL\Core\Attributes\QLQuery;
+use LaravelQL\LaravelQL\Core\Attributes\QLMutation;
 
 #[QLDTO]
 class UserDTO
 {
     public function __construct(private User $user) {}
 
-    #[QLArray('string')]
-    public ?array $games;
+    public string $name;
 
-    public ?string $fname;
+    // #[QLArray('string')]
+    // public ?array $games;
 
-    public string $lname;
+    // public ?string $fname;
 
-    public Game $game;
+    // public string $lname;
+
+    // public Game $game;
 
     #[QLQuery]
     public function user(int $id): ?User
@@ -29,5 +31,12 @@ class UserDTO
     }
 
     #[QLMutation]
-    public function createUser() {}
+    public function createUser(): User
+    {
+        $user = User::create([
+            'name' => 'Hossein',
+            'email' => 'test@gmail.com',
+        ]);
+        return $user;
+    }
 }

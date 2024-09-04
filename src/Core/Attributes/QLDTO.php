@@ -24,6 +24,9 @@ class QLDTO
      */
     private array $queries = [];
 
+
+    private array $mutations = [];
+
     public function getFields(): array
     {
         $props = $this->reflection->getProperties();
@@ -53,7 +56,24 @@ class QLDTO
             return count($attributes) > 0;
         });
 
+        $this->queries = $this->generate($methods);
+    }
+
+    public function generateMutations()
+    {
+        $methods = $this->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+        $methods = array_filter($methods, function (ReflectionMethod $method) {
+            $attributes = $method->getAttributes(QLMutation::class);
+            return count($attributes) > 0;
+        });
+
+        $this->mutations = $this->generate($methods);
+    }
+
+    private function generate(array $methods)
+    {
         $class = $this->reflection->getName();
+        $final = [];
         foreach ($methods as $method) {
             if (!$method->hasReturnType()) {
                 throw new QueryMustHaveReturnTypeException("You must define a `return type` for $method->name in $class");
@@ -64,8 +84,7 @@ class QLDTO
             $modelClassName = $this->reflection->getName();
             $args = Util::getQueryArgs($method);
 
-            //TODO must write dynamic resolver
-            $this->queries[$methodName] = [
+            $final[$methodName] = [
                 'type' => $type,
                 'resolve' => static function ($rootVal, $args) use ($modelClassName, $methodName, $method, $type) {
                     try {
@@ -78,6 +97,7 @@ class QLDTO
                         foreach ($parameters as $parameter) {
                             $name = $parameter->getName();
                             if (!key_exists($name, $args)) {
+                                //TODO this Exception must change and must return a error in the final result instead of Internal Error message 
                                 throw new RuntimeException(
                                     "Field \"$methodName\" argument \"$name\" of type \"{$type->toString()}\" is required but not provided. "
                                 );
@@ -89,11 +109,16 @@ class QLDTO
                 'args' => $args
             ];
         }
+        return $final;
     }
-
 
     public function getQueries(): array
     {
         return $this->queries;
+    }
+
+    public function getMutations(): array
+    {
+        return $this->mutations;
     }
 }

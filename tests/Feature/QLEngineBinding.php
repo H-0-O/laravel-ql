@@ -41,10 +41,10 @@ class QLEngineBinding extends TestCase
 
         $re = $this->postJson('/graphql', [
             'query' => <<<'GQL'
-                query{
-                    user(id: 223){
-                        fname
-
+                
+                mutation {
+                    createUser{
+                        name
                     }
                 }
 

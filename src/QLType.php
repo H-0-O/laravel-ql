@@ -78,6 +78,7 @@ class QLType
     public function initQueries()
     {
         $this->QLDTO->generateQuires();
+        $this->QLDTO->generateMutations();
     }
 
     /**
@@ -103,5 +104,10 @@ class QLType
     public function getQueries()
     {
         return $this->QLDTO->getQueries();
+    }
+
+    public function getMutations()
+    {
+        return $this->QLDTO->getMutations();
     }
 }
