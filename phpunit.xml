@@ -17,5 +17,10 @@
         <env name="APP_DEBUG" value="true"/>
         <env name="LARAVEL_QL_DEBUG" value="true"/>
         <env name="APP_ENV" value="local"/>
+        <env name="DB_CONNECTION" value="mysql" />
+        <env name="DB_DATABASE" value="laravel-ql" />
+        <env name="DB_PASSWORD" value="123" />
+        <env name="DB_USERNAME" value="root" />
+        <env name="DB_HOST" value="db" />
     </php>
 </phpunit>

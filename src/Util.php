@@ -117,17 +117,17 @@ class Util
     {
         $args = [];
         foreach ($method->getParameters() as $param) {
-            // dd($param->getType());
+
             /** @var ReflectionParameter $param */
             $paramName = $param->getName();
             $args[$paramName] = [
                 'type' => Util::resolveType($param->getType(), [], "$paramName argument ", $method->class),
             ];
+
             if ($param->isDefaultValueAvailable()) {
                 $args[$paramName]['defaultValue'] = $param->getDefaultValue();
             }
         }
         return $args;
     }
-    // public static function resolveResolver() {}
 }

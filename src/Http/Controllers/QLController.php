@@ -3,6 +3,7 @@
 namespace LaravelQL\LaravelQL\Http\Controllers;
 
 use App\Models\User;
+use Error;
 use GraphQL\Error\DebugFlag;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
@@ -90,7 +91,8 @@ class QLController extends Controller
             $result = GraphQL::executeQuery($schema, $query, null, null, [])->toArray(DebugFlag::INCLUDE_DEBUG_MESSAGE);
             Log::info("", [$result]);
             $output = $result;
-        } catch (\Exception $e) {
+        } catch (\Exception | Error $e) {
+            dd("here in catch");
             $output = [
                 'errors' => [
                     'message' => $e->getMessage()

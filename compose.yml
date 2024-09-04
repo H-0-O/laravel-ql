@@ -1,11 +1,12 @@
 services:
   db:
-    image: mysql:latest
+    image: mysql:8.0.33
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 123
       MYSQL_DATABASE: laravel-ql
   app:
-    image: inner_php:v1
-
+    image: pandora_backend_app:v1
+    volumes:
+      - ./:/home/

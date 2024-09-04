@@ -6,7 +6,6 @@ use App\Models\Game\Game;
 use Illuminate\Database\Eloquent\Model;
 use LaravelQL\LaravelQL\Core\Attributes\QLModel;
 use LaravelQL\LaravelQL\Core\Attributes\QLQuery;
-use LaravelQL\LaravelQL\Core\Attributes\QLArray;
 
 #[QLModel(UserDTO::class)]
 class User extends Model
@@ -31,9 +30,11 @@ class User extends Model
     //     ];
     // }
 
+    //TODO The QLQuery must move to DTO Class
+
     //these must add to RootQuery
     #[QLQuery]
-    public function user(int $id, string $name = "Hello"): string
+    public function user(int $id, ?string $name): string
     {
         return $name ?? "empty";
     }
@@ -44,6 +45,7 @@ class User extends Model
         return new Game();
     }
 
+    public function profile() {}
 
     #[QLMutation]
     public function createUser() {}
