@@ -2,7 +2,9 @@
 
 namespace LaravelQL\LaravelQL\Core\Attributes;
 
+use ArgumentCountError;
 use Attribute;
+use GraphQL\Error\FormattedError;
 use LaravelQL\LaravelQL\Exceptions\InvalidReturnTypeException;
 use LaravelQL\LaravelQL\Exceptions\QueryMustHaveReturnTypeException;
 use LaravelQL\LaravelQL\Util;
@@ -25,12 +27,6 @@ class QLModel
 
     public ReflectionClass $reflection;
 
-
-    /** 
-     * here we hold function that has #[QLQuery] Attribute
-     * @var array
-     */
-    private array $queries = [];
 
     /**
      * This attribute tell Laravel-ql that , I want to use this model as Graphql 
@@ -61,44 +57,5 @@ class QLModel
         }
 
         return $returnType->getName();
-    }
-
-
-    public function generateQuires(): void
-    {
-        $methods = $this->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-        $methods = array_filter($methods, function (ReflectionMethod $method) {
-            $attributes = $method->getAttributes(QLQuery::class);
-            return count($attributes) > 0;
-        });
-
-        $class = $this->reflection->getName();
-        foreach ($methods as $method) {
-            if (!$method->hasReturnType()) {
-                throw new QueryMustHaveReturnTypeException("You must define a `return type` for $method->name in $class");
-            }
-
-            $type = Util::resolveType($method->getReturnType(), $method->getAttributes(), $method->getName(), $class);
-            $methodName = $method->getName();
-            $modelClassName = $this->reflection->getName();
-            $args = Util::getQueryArgs($method);
-
-            //TODO must write dynamic resolver
-            $this->queries[$methodName] = [
-                'type' => $type,
-                'resolve' => static function ($rootVal, $args) use ($modelClassName, $methodName) {
-                    //TODO we must create a debug situation to log resolvers
-                    $object = resolve($modelClassName);
-                    return call_user_func_array([$object, $methodName], $args);
-                },
-                'args' => $args
-            ];
-        }
-    }
-
-
-    public function getQueries(): array
-    {
-        return $this->queries;
     }
 }

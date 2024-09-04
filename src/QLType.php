@@ -77,7 +77,7 @@ class QLType
 
     public function initQueries()
     {
-        $this->QLModel->generateQuires();
+        $this->QLDTO->generateQuires();
     }
 
     /**
@@ -102,6 +102,6 @@ class QLType
 
     public function getQueries()
     {
-        return $this->QLModel->getQueries();
+        return $this->QLDTO->getQueries();
     }
 }
